@@ -1,71 +1,46 @@
-﻿@model IEnumerable<GiveAwayApp.Models.Spil>
+﻿@model GiveAwayApp.Models.SpilGenreViewModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Spiludvalg";
 }
 
-<h1>Index</h1>
+<h1>Spiludvalg</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Tilføj et nyt spil</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.SteamId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Titel)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SpilCoverUrl)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Udgivelsesdato)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ValgtAntal)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Genre)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Pris)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.SteamId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Titel)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SpilCoverUrl)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Udgivelsesdato)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ValgtAntal)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Genre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Pris)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.SpilId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.SpilId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.SpilId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<section class="container d-inline-block">
+    <form class="float-lg-left" asp-controller="Spil" asp-action="Index" method="get">
+        <p>
+            Genre: <select class="form-select" asp-for="SpilGenre" asp-items="Model.Genre">
+                <option selected>Alle</option>
+            </select>
+            Titel: <input type="text" asp-for="TitelFilter" />
+            <input type="submit" value="Filter" />
+        </p>
+    </form>
+    <!--<form class="float-lg-right" asp-controller="Spil" asp-action="Index" method="get">
+            <p>
+                Sortering: <select>
+                    <option value="">Alfabetisk (A-Å)</option>
+                    <option value="">Alfabetisk (Å-A)</option>
+                    <option value="">Nyeste udgivet først</option>
+                    <option value="">Ældste udgivet først</option>
+                </select>
+            </p>
+        </form>-->
+</section>
+
+    <section class="container">
+        <div class="row">
+            @foreach (var item in Model.SpilList)
+            {
+                <div class="col-md-3">
+                    <a class="" href="@Href($"https://store.steampowered.com/app/{item.SteamId}/")">
+                        @Html.DisplayFor(modelItem => item.Titel)
+                    </a> <br />
+                    <a asp-action="Edit" asp-route-id="@item.SpilId"><img class="img-fluid" src="@Href(item.SpilCoverUrl)" alt="@item.Titel" /></a>
+                </div>
+            }
+        </div>
+    </section>

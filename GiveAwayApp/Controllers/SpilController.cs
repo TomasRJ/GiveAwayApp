@@ -20,9 +20,28 @@ namespace GiveAwayApp.Controllers
         }
 
         // GET: Spil
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string spilGenre, string titelFilter)
         {
-            return View(await _context.Spil.ToListAsync());
+            var genreQuery = from s in _context.Spil orderby s.Genre select s.Genre;
+            var spil = from s in _context.Spil select s;
+
+            if (!string.IsNullOrEmpty(titelFilter))
+            {
+                spil = spil.Where(s => s.Titel.Contains(titelFilter));
+            }
+
+            if (!string.IsNullOrEmpty(spilGenre))
+            {
+                spil = spil.Where(g => g.Genre == spilGenre);
+            }
+
+            var spilGenreVM = new SpilGenreViewModel
+            {
+                Genre = new SelectList(await genreQuery.Distinct().ToListAsync()),
+                SpilList = await spil.ToListAsync()
+            };
+
+            return View(spilGenreVM);
         }
 
         // GET: Spil/Details/5
