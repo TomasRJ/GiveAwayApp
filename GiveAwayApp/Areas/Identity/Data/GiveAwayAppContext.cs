@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using GiveAwayApp.Areas.Identity.Data;
-using Microsoft.AspNetCore.Identity;
+﻿using GiveAwayApp.Areas.Identity.Data;
+using GiveAwayApp.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,9 +15,21 @@ namespace GiveAwayApp.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            // Customize the ASP.NET Identity model and override the defaults if needed.
-            // For example, you can rename the ASP.NET Identity table names and more.
-            // Add your customizations after calling base.OnModelCreating(builder);
+            builder.Entity<GiveAwayAppUser>() // konfiguration af mellemtabellen for at tilføje oprettelses dato.
+                .HasMany(s => s.Spil)
+                .WithMany(b => b.Brugere)
+                .UsingEntity<BrugereSpil>(
+                    bs => bs.HasOne(spilProp => spilProp.Spil).WithMany().HasForeignKey(bsProp => bsProp.SpilId),
+                    bs => bs.HasOne(brugerProp => brugerProp.Bruger).WithMany().HasForeignKey(bsProp => bsProp.BrugerId),
+                    bs =>
+                    {
+                        bs.HasKey(pKey => new { pKey.BrugerId, pKey.SpilId }); // laver sammensat primary key
+                        bs.Property(bsProp => bsProp.OprettelsesDato).HasDefaultValueSql("GETUTCDATE()"); // laver oprettelsesdatokolonnen i BrugereSpil tabellen.
+                    }
+                );
         }
+        public virtual DbSet<Spil> Spil { get; set; }
+        public virtual DbSet<GiveAwayAppUser> Brugere { get; set; }
+        public virtual DbSet<BrugereSpil> BrugereSpil { get; set; }
     }
 }
