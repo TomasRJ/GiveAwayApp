@@ -9,6 +9,8 @@ namespace GiveAwayApp.Models
     public class Spil
     {
         public int SpilId { get; set; }
+
+        [Display(Name = "Steam ID")]
         public int SteamId { get; set; }
         public string Titel { get; set; }
 
@@ -17,6 +19,8 @@ namespace GiveAwayApp.Models
 
         [DataType(DataType.Date)]
         public DateTime Udgivelsesdato { get; set; }
+
+        [Display(Name = "Valgt Antal")]
         public ulong ValgtAntal { get; set; }
         public ICollection<GiveAwayAppUser> Brugere { get; set; }
         public string Genre { get; set; }
