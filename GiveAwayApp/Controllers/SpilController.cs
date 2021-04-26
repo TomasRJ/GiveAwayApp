@@ -28,6 +28,7 @@ namespace GiveAwayApp.Controllers
         public async Task<IActionResult> Index(string spilGenre, string titelFilter)
         {
             BrugerInfo = await _userManager.GetUserAsync(HttpContext.User);
+            ViewBag.BrugerId = BrugerInfo == null ? "" : BrugerInfo.Id;
             var genreQuery = from s in _context.Spil orderby s.Genre select s.Genre;
             var spil = from s in _context.Spil select s;
 

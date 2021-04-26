@@ -6,9 +6,11 @@
 
 <h1>Spiludvalg</h1>
 
-<p>
-    <a class="float-left" asp-action="Create">Tilføj et nyt spil</a>
-</p>
+@if (ViewBag.BrugerId == "276d0d24-816f-4f66-84f2-bccc6905bc4a")
+{
+    <a class="btn btn-primary float-left" asp-action="Create">Tilføj et nyt spil</a>
+}
+
 <section class="container d-inline-block p-0">
     <form class="float-lg-left" asp-controller="Spil" asp-action="Index" method="get">
         <p>
@@ -43,15 +45,15 @@
     <form class="row" id="ValgteSpil" method="post">
         @foreach (var spil in Model.SpilList)
         {
-        <div class="col-md-3">
-            <div class="d-inline">
-                <a class="float-left" href="@Href($"https://store.steampowered.com/app/{spil.SteamId}/")">
-                    @Html.DisplayFor(modelItem => spil.Titel)
-                </a>
-                <input class="float-right" type="checkbox" name="valgteSpilId" value=@spil.SpilId>
+            <div class="col-md-3">
+                <div class="d-inline">
+                    <a class="float-left" href="@Href($"https://store.steampowered.com/app/{spil.SteamId}/")">
+                        @Html.DisplayFor(modelItem => spil.Titel)
+                    </a>
+                    <input class="float-right" type="checkbox" name="valgteSpilId" value=@spil.SpilId>
+                </div>
+                <a href="@Href($"https://store.steampowered.com/app/{spil.SteamId}/")"><img class="img-fluid" src="@Href(spil.SpilCoverUrl)" alt="@spil.Titel" /></a>
             </div>
-            <a href="@Href($"https://store.steampowered.com/app/{spil.SteamId}/")"><img class="img-fluid" src="@Href(spil.SpilCoverUrl)" alt="@spil.Titel" /></a>
-        </div>
         }
     </form>
 </section>
