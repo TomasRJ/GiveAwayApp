@@ -7,19 +7,19 @@
 <h1>Spiludvalg</h1>
 
 <p>
-    <a asp-action="Create">Tilføj et nyt spil</a>
+    <a class="float-left" asp-action="Create">Tilføj et nyt spil</a>
 </p>
-<section class="container d-inline-block">
+<section class="container d-inline-block p-0">
     <form class="float-lg-left" asp-controller="Spil" asp-action="Index" method="get">
         <p>
             Genre: <select class="form-select" asp-for="SpilGenre" asp-items="Model.Genre">
-                <option selected>Alle</option>
+                <option selected value="">Alle</option>
             </select>
             Titel: <input type="text" asp-for="TitelFilter" />
             <input type="submit" value="Filter" />
         </p>
     </form>
-    <!--<form class="float-lg-right" asp-controller="Spil" asp-action="Index" method="get">
+    <!-- <form class="float-lg-right" asp-controller="Spil" asp-action="Index" method="get">
             <p>
                 Sortering: <select>
                     <option value="">Alfabetisk (A-Å)</option>
@@ -28,19 +28,30 @@
                     <option value="">Ældste udgivet først</option>
                 </select>
             </p>
-        </form>-->
+        </form> -->
+    @if (User.Identity.IsAuthenticated)
+    {
+        <button asp-action="InsendValgteSpil" class="float-right btn btn-primary" form="ValgteSpil" type="submit">Indsend valgte spil</button>
+    }
+    else
+    {
+        <button title="Du skal være logget ind før at du kan vælge de spil du gerne vil vinde" type="button" class="float-right btn btn-primary disabled" disabled>Indsend valgte spil</button>
+    }
 </section>
 
-    <section class="container">
-        <div class="row">
-            @foreach (var item in Model.SpilList)
-            {
-                <div class="col-md-3">
-                    <a class="" href="@Href($"https://store.steampowered.com/app/{item.SteamId}/")">
-                        @Html.DisplayFor(modelItem => item.Titel)
-                    </a> <br />
-                    <a asp-action="Edit" asp-route-id="@item.SpilId"><img class="img-fluid" src="@Href(item.SpilCoverUrl)" alt="@item.Titel" /></a>
-                </div>
-            }
+<section class="container">
+    <form class="row" id="ValgteSpil" method="post">
+        @foreach (var spil in Model.SpilList)
+        {
+        <div class="col-md-3">
+            <div class="d-inline">
+                <a class="float-left" href="@Href($"https://store.steampowered.com/app/{spil.SteamId}/")">
+                    @Html.DisplayFor(modelItem => spil.Titel)
+                </a>
+                <input class="float-right" type="checkbox" name="valgteSpilId" value=@spil.SpilId>
+            </div>
+            <a href="@Href($"https://store.steampowered.com/app/{spil.SteamId}/")"><img class="img-fluid" src="@Href(spil.SpilCoverUrl)" alt="@spil.Titel" /></a>
         </div>
-    </section>
+        }
+    </form>
+</section>
