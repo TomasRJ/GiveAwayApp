@@ -3,6 +3,10 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Velkommen til en give away af spil</h1>
+    <p>Klik her <a asp-controller="Spil" asp-action="Index">for at se udvalget af de spil man kan vinde på denne hjemmeside</a>.</p>
+    @if (!User.Identity.IsAuthenticated)
+    {
+        <p class="text-danger">Husk at du skal være oprettet som en bruger før at du kan vælge de spil du gerne vil vinde!</p>
+    }
 </div>
