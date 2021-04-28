@@ -4,15 +4,10 @@
     ViewData["Title"] = "Spiludvalg";
 }
 
-<h1>Spiludvalg</h1>
-
-@if (ViewBag.BrugerId == "276d0d24-816f-4f66-84f2-bccc6905bc4a")
-{
-    <a class="btn btn-primary float-left" asp-action="Create">Tilføj et nyt spil</a>
-}
+<h1>Valgte spil</h1>
 
 <section class="container d-inline-block p-0">
-    <form class="float-lg-left" asp-controller="Spil" asp-action="Index" method="get">
+    <form class="float-lg-left" asp-controller="Spil" asp-action="ValgteSpil" method="get">
         <p>
             Genre: <select class="form-select" asp-for="SpilGenre" asp-items="Model.Genre">
                 <option selected value="">Alle</option>
@@ -33,11 +28,11 @@
         </form> -->
     @if (User.Identity.IsAuthenticated)
     {
-        <button asp-action="InsendValgteSpil" class="float-right btn btn-primary" form="ValgteSpil" type="submit">Indsend valgte spil</button>
+        <button asp-action="SletValgteSpil" class="float-right btn btn-danger" form="ValgteSpil" type="submit">Slet valgte spil</button>
     }
     else
     {
-        <button title="Du skal være logget ind før at du kan vælge de spil du gerne vil vinde" type="button" class="float-right btn btn-primary disabled" disabled>Indsend valgte spil</button>
+        <button title="Du skal være logget ind før at du kan slette spil du ikke vil have længere" type="button" class="float-right btn btn-danger disabled" disabled>Indsend valgte spil</button>
     }
 </section>
 

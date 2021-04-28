@@ -29,38 +29,99 @@ namespace GiveAwayApp.Controllers
         {
             BrugerInfo = await _userManager.GetUserAsync(HttpContext.User);
             ViewBag.BrugerId = BrugerInfo == null ? "" : BrugerInfo.Id;
-            var genreQuery = from s in _context.Spil orderby s.Genre select s.Genre;
-            var spil = from s in _context.Spil select s;
+            IQueryable<string> spiludvalgGenreQuery;
+            IQueryable<Spil> spiludvalgSpilQuery;
+
+            if (BrugerInfo != null)
+            {
+                spiludvalgGenreQuery = from spil in _context.Spil
+                                       where !(from bs in _context.BrugereSpil where bs.BrugerId == BrugerInfo.Id select bs.SpilId).Contains(spil.SpilId)
+                                       orderby spil.Genre
+                                       select spil.Genre;
+                spiludvalgSpilQuery = from spil in _context.Spil
+                                      where !(from bs in _context.BrugereSpil where bs.BrugerId == BrugerInfo.Id select bs.SpilId).Contains(spil.SpilId)
+                                      select spil;
+            }
+            else
+            {
+                spiludvalgGenreQuery = from s in _context.Spil
+                                       orderby s.Genre
+                                       select s.Genre;
+                spiludvalgSpilQuery = from s in _context.Spil
+                                      select s;
+            }
 
             if (!string.IsNullOrEmpty(titelFilter))
             {
-                spil = spil.Where(s => s.Titel.Contains(titelFilter));
+                spiludvalgSpilQuery = spiludvalgSpilQuery.Where(s => s.Titel.Contains(titelFilter));
             }
 
             if (!string.IsNullOrEmpty(spilGenre))
             {
-                spil = spil.Where(g => g.Genre == spilGenre);
+                spiludvalgSpilQuery = spiludvalgSpilQuery.Where(g => g.Genre == spilGenre);
             }
 
-            SpilGenreViewModel spilGenreVM = new SpilGenreViewModel
+            SpilGenreViewModel spiludvalgVM = new SpilGenreViewModel
             {
-                Genre = new SelectList(await genreQuery.Distinct().ToListAsync()),
-                SpilList = await spil.ToListAsync()
+                Genre = new SelectList(await spiludvalgGenreQuery.Distinct().ToListAsync()),
+                SpilList = await spiludvalgSpilQuery.ToListAsync()
             };
-
-            return View(spilGenreVM);
+            return View(spiludvalgVM);
         }
-
-        public async Task<IActionResult> InsendValgteSpilAsync(int[] valgteSpilId)
+        public async Task<IActionResult> ValgteSpil(string spilGenre, string titelFilter)
         {
-            if (valgteSpilId.Length != 0)
+            BrugerInfo = await _userManager.GetUserAsync(HttpContext.User);
+
+            if (BrugerInfo != null)
+            {
+
+                IQueryable<string> valgteSpilGenreQuery = from spil in _context.Spil
+                                                          join bs in _context.BrugereSpil on spil.SpilId equals bs.SpilId
+                                                          where bs.BrugerId == BrugerInfo.Id
+                                                          orderby spil.Genre
+                                                          select spil.Genre; 
+                IQueryable<Spil> valgteSpilQuery = from spil in _context.Spil
+                                                   join bs in _context.BrugereSpil on spil.SpilId equals bs.SpilId
+                                                   where bs.BrugerId == BrugerInfo.Id
+                                                   select spil;
+
+                if (!string.IsNullOrEmpty(titelFilter))
+                {
+                    valgteSpilQuery = valgteSpilQuery.Where(s => s.Titel.Contains(titelFilter));
+                }
+
+                if (!string.IsNullOrEmpty(spilGenre))
+                {
+                    valgteSpilQuery = valgteSpilQuery.Where(g => g.Genre == spilGenre);
+                }
+                SpilGenreViewModel valgteSpilVM = new SpilGenreViewModel
+                {
+                    Genre = new SelectList(await valgteSpilGenreQuery.Distinct().ToListAsync()),
+                    SpilList = await valgteSpilQuery.ToListAsync()
+
+                };
+                return View(valgteSpilVM);
+            }
+            else
+            {
+                SpilGenreViewModel valgteSpilVM = new SpilGenreViewModel
+                {
+                    Genre = new SelectList(Enumerable.Empty<SelectListItem>()),
+                    SpilList = new List<Spil>(Enumerable.Empty<Spil>())
+                };
+                return View(valgteSpilVM);
+            }
+        }
+        public async Task<IActionResult> InsendValgteSpilAsync(int[] valgteSpilIds)
+        {
+            if (valgteSpilIds.Length != 0)
             {
                 List<BrugereSpil> brugereSpilData = new List<BrugereSpil>();
-                for (int forLoopIndex = 0; forLoopIndex < valgteSpilId.Length; forLoopIndex++)
+                foreach (int valgteSpilId in valgteSpilIds)
                 {                    
                     brugereSpilData.Add(new BrugereSpil() { 
                         BrugerId = BrugerInfo.Id,
-                        SpilId = valgteSpilId[forLoopIndex],
+                        SpilId = valgteSpilId,
                         OprettelsesDato = DateTime.UtcNow 
                     });
                 }
@@ -68,6 +129,25 @@ namespace GiveAwayApp.Controllers
                 await _context.SaveChangesAsync();
             }
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> SletValgteSpilAsync(int[] valgteSpilIds)
+        {
+            if (valgteSpilIds.Length != 0)
+            {
+                List<BrugereSpil> valgteSpilList = new List<BrugereSpil>();
+                foreach (int valgteSpilId in valgteSpilIds)
+                {
+                    valgteSpilList.Add(new BrugereSpil()
+                    {
+                        BrugerId = BrugerInfo.Id,
+                        SpilId = valgteSpilId
+                    });                    
+                }
+                _context.BrugereSpil.RemoveRange(valgteSpilList);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(ValgteSpil));
         }
 
         // GET: Spil/Details/5
