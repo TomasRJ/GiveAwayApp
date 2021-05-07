@@ -9,6 +9,7 @@ using GiveAwayApp.Data;
 using GiveAwayApp.Models;
 using Microsoft.AspNetCore.Identity;
 using GiveAwayApp.Areas.Identity.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GiveAwayApp.Controllers
 {
@@ -112,14 +113,17 @@ namespace GiveAwayApp.Controllers
                 return View(valgteSpilVM);
             }
         }
+        [Authorize]
+        [HttpPost]
         public async Task<IActionResult> InsendValgteSpilAsync(int[] valgteSpilIds)
         {
             if (valgteSpilIds.Length != 0)
             {
-                List<BrugereSpil> brugereSpilData = new List<BrugereSpil>();
+                List<BrugereSpil> brugereSpilData = new();
                 foreach (int valgteSpilId in valgteSpilIds)
-                {                    
-                    brugereSpilData.Add(new BrugereSpil() { 
+                {
+                    brugereSpilData.Add(new BrugereSpil()
+                    {
                         BrugerId = BrugerInfo.Id,
                         SpilId = valgteSpilId,
                         OprettelsesDato = DateTime.UtcNow 
@@ -130,12 +134,13 @@ namespace GiveAwayApp.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
-
+        [Authorize]
+        [HttpPost]
         public async Task<IActionResult> SletValgteSpilAsync(int[] valgteSpilIds)
         {
             if (valgteSpilIds.Length != 0)
             {
-                List<BrugereSpil> valgteSpilList = new List<BrugereSpil>();
+                List<BrugereSpil> valgteSpilList = new();
                 foreach (int valgteSpilId in valgteSpilIds)
                 {
                     valgteSpilList.Add(new BrugereSpil()
@@ -151,6 +156,7 @@ namespace GiveAwayApp.Controllers
         }
 
         // GET: Spil/Details/5
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -169,6 +175,7 @@ namespace GiveAwayApp.Controllers
         }
 
         // GET: Spil/Create
+        [Authorize(Roles = "admin")]
         public IActionResult Create()
         {
             return View();
@@ -179,6 +186,7 @@ namespace GiveAwayApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Create([Bind("SpilId,SteamId,Titel,SpilCoverUrl,Udgivelsesdato,ValgtAntal,Genre,Pris")] Spil spil)
         {
             if (ModelState.IsValid)
@@ -191,6 +199,7 @@ namespace GiveAwayApp.Controllers
         }
 
         // GET: Spil/Edit/5
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -211,6 +220,7 @@ namespace GiveAwayApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Edit(int id, [Bind("SpilId,SteamId,Titel,SpilCoverUrl,Udgivelsesdato,ValgtAntal,Genre,Pris")] Spil spil)
         {
             if (id != spil.SpilId)
@@ -242,6 +252,7 @@ namespace GiveAwayApp.Controllers
         }
 
         // GET: Spil/Delete/5
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -262,6 +273,7 @@ namespace GiveAwayApp.Controllers
         // POST: Spil/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var spil = await _context.Spil.FindAsync(id);

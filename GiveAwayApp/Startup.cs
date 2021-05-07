@@ -33,6 +33,7 @@ namespace GiveAwayApp
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddDefaultIdentity<GiveAwayAppUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<GiveAwayAppContext>();
             services.AddControllersWithViews();
         }
