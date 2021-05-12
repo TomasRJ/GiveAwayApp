@@ -17,11 +17,13 @@ namespace GiveAwayApp.Controllers
     {
         private readonly GiveAwayAppContext _context;
         private readonly UserManager<GiveAwayAppUser> _userManager;
+        private readonly SteamWebApiController _steamWebApi;
 
-        public SpilController(GiveAwayAppContext context, UserManager<GiveAwayAppUser> userManager)
+        public SpilController(GiveAwayAppContext context, UserManager<GiveAwayAppUser> userManager, SteamWebApiController steamWebApi)
         {
             _context = context;
             _userManager = userManager;
+            _steamWebApi = steamWebApi;
         }
         private static GiveAwayAppUser BrugerInfo { get; set; }
 
@@ -176,9 +178,17 @@ namespace GiveAwayApp.Controllers
 
         // GET: Spil/Create
         [Authorize(Roles = "admin")]
-        public IActionResult Create()
+        public async Task<IActionResult> Create(string SteamID)
         {
-            return View();
+            if (SteamID == null)
+            {
+                return View();
+            }
+            else
+            {
+                Spil spil = await _steamWebApi.GetSteamInfo(int.Parse(SteamID));
+                return View(spil);
+            }            
         }
 
         // POST: Spil/Create

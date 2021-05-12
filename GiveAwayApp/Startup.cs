@@ -1,4 +1,5 @@
 using GiveAwayApp.Areas.Identity.Data;
+using GiveAwayApp.Controllers;
 using GiveAwayApp.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -36,6 +37,8 @@ namespace GiveAwayApp
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<GiveAwayAppContext>();
             services.AddControllersWithViews();
+
+            services.AddHttpClient<SteamWebApiController>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
