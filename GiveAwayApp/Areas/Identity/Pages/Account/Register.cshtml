@@ -1,4 +1,6 @@
 ﻿@page
+@using Microsoft.Extensions.Configuration;
+@inject IConfiguration configuration
 @model RegisterModel
 @{
     ViewData["Title"] = "Register";
@@ -27,6 +29,7 @@
                 <input asp-for="Input.ConfirmPassword" class="form-control" />
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
+            <div class="g-recaptcha mb-3" data-sitekey="@configuration["reCAPTCHA:SiteKey"]"></div>
             <button type="submit" class="btn btn-primary">Register</button>
         </form>
     </div>
@@ -63,5 +66,6 @@
 </div>
 
 @section Scripts {
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <partial name="_ValidationScriptsPartial" />
 }

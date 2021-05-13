@@ -14,6 +14,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using System.Net.Http;
+using System.Text.Json;
+using Microsoft.Extensions.Configuration;
+using System.Text.Json.Serialization;
 
 namespace GiveAwayApp.Areas.Identity.Pages.Account
 {
@@ -24,17 +28,22 @@ namespace GiveAwayApp.Areas.Identity.Pages.Account
         private readonly UserManager<GiveAwayAppUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly IHttpClientFactory _factory;
 
         public RegisterModel(
             UserManager<GiveAwayAppUser> userManager,
             SignInManager<GiveAwayAppUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IHttpClientFactory factory,
+            IConfiguration configuration)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _factory = factory;
+            Configuration = configuration;
         }
 
         [BindProperty]
@@ -43,6 +52,7 @@ namespace GiveAwayApp.Areas.Identity.Pages.Account
         public string ReturnUrl { get; set; }
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
+        public IConfiguration Configuration { get; }
 
         public class InputModel
         {
@@ -71,6 +81,8 @@ namespace GiveAwayApp.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
+            await ReCaptchaCheck();
+
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
@@ -111,5 +123,40 @@ namespace GiveAwayApp.Areas.Identity.Pages.Account
             // If we got this far, something failed, redisplay form
             return Page();
         }
+
+        private async Task ReCaptchaCheck()
+        {
+            string recaptchaResponse = Request.Form["g-recaptcha-response"];
+            var client = _factory.CreateClient();
+            
+            try
+            {
+                var parameters = new Dictionary<string, string>
+                {
+                    {"secret", Configuration["reCAPTCHA:SecretKey"]},
+                    {"response", recaptchaResponse}
+                };
+
+                var response = await client.PostAsync("https://www.google.com/recaptcha/api/siteverify", new FormUrlEncodedContent(parameters));
+                response.EnsureSuccessStatusCode();
+
+                var apiResponse = await response.Content.ReadAsStreamAsync();
+                var apiJson = await JsonSerializer.DeserializeAsync<ReCaptchaResponse>(apiResponse);
+                if (apiJson.Succes != true)
+                {
+                    this.ModelState.AddModelError(string.Empty, "Hvis du ikke er en robot så husk at tjekke \"i'm not a robot\" boksen");
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                // Noget gik galt med API'en. Lad requesten gå igennem.
+                _logger.LogError(ex, "Uventet fejl ved kalde af reCAPTCHA's api.");
+            }
+        }
+    }
+    public class ReCaptchaResponse
+    {
+        [JsonPropertyName("success")]
+        public bool Succes { get; set; }
     }
 }
