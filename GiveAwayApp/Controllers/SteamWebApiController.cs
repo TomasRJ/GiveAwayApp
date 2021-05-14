@@ -22,7 +22,7 @@ namespace GiveAwayApp.Controllers
 
         public async Task<Spil> GetSteamInfo(int steamId)
         {
-            HttpResponseMessage response = await SteamApiClient.GetAsync($"/api/appdetails?appids={steamId}");
+            var response = await SteamApiClient.GetAsync($"/api/appdetails?appids={steamId}");
             response.EnsureSuccessStatusCode();
 
             Stream responseStream = await response.Content.ReadAsStreamAsync();

@@ -1,0 +1,20 @@
+﻿@{
+    ViewData["Title"] = "Info om hjemmesiden";
+}
+<section class="container">
+    <h1>Info om hjemmesiden</h1>
+    <p>
+        På denne hjemmeside kan man vinde spil på Steam i en lodtrækning.
+        Denne lodtrækning vil være for hver enkelt spil som vil så blive uddelt til en tilfældig bruger.
+    </p>
+    <p>
+        Man skal så bruge 
+        <a asp-controller="Spil" asp-action="Index">Spiludvalg siden</a> 
+        til at vælge de spil man gerne vil have muligheden for at vinde og så kan bruge 
+        <a asp-controller="Spil" asp-action="Ønskeliste">Ønskeliste siden</a> 
+        til at redigerer i ens valgte spil.
+    </p>
+    <p>
+        For at bruge disse sider skal man først <a asp-area="Identity" asp-page="/Account/Register">oprette sig som en bruger.</a>
+    </p>
+</section>

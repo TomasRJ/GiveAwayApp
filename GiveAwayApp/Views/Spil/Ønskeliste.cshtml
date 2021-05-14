@@ -1,24 +1,18 @@
 ﻿@model GiveAwayApp.Models.SpilGenreViewModel
 
 @{
-    ViewData["Title"] = "Spiludvalg";
+    ViewData["Title"] = "Ønskeliste";
 }
-
 <section class="container">
-    <h1>Spiludvalg</h1>
-
-    @if (ViewBag.BrugerId == "276d0d24-816f-4f66-84f2-bccc6905bc4a")
-    {
-        <a class="btn btn-primary" asp-action="Create">Tilføj et nyt spil</a>
-    }
-    <p>På denne side kan du vælge, hvis du er logget ind, hvilke spil du gerne vil have mmuligheden for at vinde.</p>
+    <h1>Ønskeliste</h1>
+    <p>På denne side kan du redigere i dit valg af spil som du gerne vil vinde.</p>
     <p class="mb-1">Her kan du filtrer efter genre og titel:</p>
 </section>
 
 <section class="container d-flex mb-3 justify-content-between">
-    <form class="d-flex" asp-controller="Spil" asp-action="Index" method="get">
+    <form class="d-flex" asp-controller="Spil" asp-action="Ønskeliste" method="get">
         <div class="mr-3">
-            Genre: 
+            Genre:
             <select class="form-select h-100" asp-for="SpilGenre" asp-items="Model.Genre">
                 <option selected value="">Alle</option>
             </select>
@@ -31,11 +25,11 @@
     </form>
     @if (User.Identity.IsAuthenticated)
     {
-        <button asp-action="InsendValgteSpil" class="btn btn-primary" form="ValgteSpil" type="submit">Gem valgte spil</button>
+        <button asp-action="SletValgteSpil" class="btn btn-danger" form="ValgteSpil" type="submit">Slet valgte spil</button>
     }
     else
     {
-        <button title="Du skal være logget ind før at du kan vælge de spil du gerne vil vinde" type="button" class="btn btn-primary disabled" disabled>Gem valgte spil</button>
+        <button title="Du skal være logget ind før at du kan slette spil du ikke vil have længere" type="button" class="btn btn-danger disabled" disabled>Slet valgte spil</button>
     }
 </section>
 
@@ -48,9 +42,9 @@
                     <label class="m-0" for=SpilId+@spil.SpilId>
                         <a href="@Href($"https://store.steampowered.com/app/{spil.SteamId}/")">@Html.DisplayFor(modelItem => spil.Titel)</a>
                     </label>
-                    <input class="ml-auto" id=SpilId+@spil.SpilId type="checkbox" name="valgteSpilIds" value=@spil.SpilId>
+                    <input class="ml-auto" type="checkbox" name="valgteSpilIds" value=@spil.SpilId>
                 </div>
-                <label for=SpilId+@spil.SpilId><img class="img-fluid" src="@Href(spil.SpilCoverUrl)" alt="@spil.Titel" /></label>
+                <a href="@Href($"https://store.steampowered.com/app/{spil.SteamId}/")"><img class="img-fluid" src="@Href(spil.SpilCoverUrl)" alt="@spil.Titel" /></a>
             </div>
         }
     </form>

@@ -71,7 +71,7 @@ namespace GiveAwayApp.Controllers
             };
             return View(spiludvalgVM);
         }
-        public async Task<IActionResult> ValgteSpil(string spilGenre, string titelFilter)
+        public async Task<IActionResult> Ønskeliste(string spilGenre, string titelFilter)
         {
             BrugerInfo = await _userManager.GetUserAsync(HttpContext.User);
 
@@ -154,7 +154,7 @@ namespace GiveAwayApp.Controllers
                 _context.BrugereSpil.RemoveRange(valgteSpilList);
                 await _context.SaveChangesAsync();
             }
-            return RedirectToAction(nameof(ValgteSpil));
+            return RedirectToAction(nameof(Ønskeliste));
         }
 
         // GET: Spil/Details/5
