@@ -13,15 +13,15 @@
     <form class="d-flex" asp-controller="Spil" asp-action="Ønskeliste" method="get">
         <div class="mr-3">
             Genre:
-            <select class="form-select h-100" asp-for="SpilGenre" asp-items="Model.Genre">
+            <select class="form-select" asp-for="SpilGenre" asp-items="Model.Genre">
                 <option selected value="">Alle</option>
             </select>
         </div>
         <div>
-            Titel: <input class="h-100" type="text" asp-for="TitelFilter" />
-            <input class="h-100" type="submit" value="Filter" />
+            Titel: <input type="text" asp-for="TitelFilter" />
+            <input type="submit" value="Filter" />
         </div>
-        <i class="bi bi-x-square-fill text-danger" style="font-size: 1.5rem; padding-left: 4.5px;"></i>
+        <a asp-action="Ønskeliste"><i class="bi bi-x-square-fill text-danger" style="font-size: 1.5rem; padding-left: 4.5px;"></i></a>
     </form>
     @if (User.Identity.IsAuthenticated)
     {
@@ -42,9 +42,9 @@
                     <label class="m-0" for=SpilId+@spil.SpilId>
                         <a href="@Href($"https://store.steampowered.com/app/{spil.SteamId}/")">@Html.DisplayFor(modelItem => spil.Titel)</a>
                     </label>
-                    <input class="ml-auto" type="checkbox" name="valgteSpilIds" value=@spil.SpilId>
+                    <input class="ml-auto" id="SpilId+@spil.SpilId" type="checkbox" name="valgteSpilIds" value=@spil.SpilId>
                 </div>
-                <a href="@Href($"https://store.steampowered.com/app/{spil.SteamId}/")"><img class="img-fluid" src="@Href(spil.SpilCoverUrl)" alt="@spil.Titel" /></a>
+                <label for="SpilId+@spil.SpilId"><img class="img-fluid" src="@Href(spil.SpilCoverUrl)" alt="@spil.Titel" /></label>
             </div>
         }
     </form>

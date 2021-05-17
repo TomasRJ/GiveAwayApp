@@ -18,7 +18,7 @@
 <section class="container d-flex mb-3 justify-content-between">
     <form class="d-flex" asp-controller="Spil" asp-action="Index" method="get">
         <div class="mr-3">
-            Genre: 
+            Genre:
             <select class="form-select h-100" asp-for="SpilGenre" asp-items="Model.Genre">
                 <option selected value="">Alle</option>
             </select>
@@ -27,7 +27,7 @@
             Titel: <input class="h-100" type="text" asp-for="TitelFilter" />
             <input class="h-100" type="submit" value="Filter" />
         </div>
-        <i class="bi bi-x-square-fill text-danger" style="font-size: 1.5rem; padding-left: 4.5px;"></i>
+        <a asp-action="Index"><i class="bi bi-x-square-fill text-danger" style="font-size: 1.5rem; padding-left: 4.5px;"></i></a>
     </form>
     @if (User.Identity.IsAuthenticated)
     {
@@ -46,7 +46,7 @@
             <div class="col-md-3 pb-3">
                 <div class="d-flex align-items-baseline">
                     <label class="m-0" for=SpilId+@spil.SpilId>
-                        <a href="@Href($"https://store.steampowered.com/app/{spil.SteamId}/")">@Html.DisplayFor(modelItem => spil.Titel)</a>
+                        <a href="@Href($" https: //store.steampowered.com/app/{spil.SteamId}/")">@Html.DisplayFor(modelItem => spil.Titel)</a>
                     </label>
                     <input class="ml-auto" id=SpilId+@spil.SpilId type="checkbox" name="valgteSpilIds" value=@spil.SpilId>
                 </div>
