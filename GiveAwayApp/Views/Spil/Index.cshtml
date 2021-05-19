@@ -31,7 +31,7 @@
     </form>
     @if (User.Identity.IsAuthenticated)
     {
-        <button asp-action="InsendValgteSpil" class="btn btn-primary" form="ValgteSpil" type="submit">Gem valgte spil</button>
+        <button asp-action="IndsendValgteSpil" class="btn btn-primary" form="ValgteSpil" type="submit">Gem valgte spil</button>
     }
     else
     {
@@ -46,7 +46,7 @@
             <div class="col-md-3 pb-3">
                 <div class="d-flex align-items-baseline">
                     <label class="m-0" for=SpilId+@spil.SpilId>
-                        <a href="@Href($" https: //store.steampowered.com/app/{spil.SteamId}/")">@Html.DisplayFor(modelItem => spil.Titel)</a>
+                        <a href="@Href($"https://store.steampowered.com/app/{spil.SteamId}/")">@Html.DisplayFor(modelItem => spil.Titel)</a>
                     </label>
                     <input class="ml-auto" id=SpilId+@spil.SpilId type="checkbox" name="valgteSpilIds" value=@spil.SpilId>
                 </div>

@@ -71,6 +71,7 @@ namespace GiveAwayApp.Controllers
             };
             return View(spiludvalgVM);
         }
+        // GET: Ønskeliste
         public async Task<IActionResult> Ønskeliste(string spilGenre, string titelFilter)
         {
             BrugerInfo = await _userManager.GetUserAsync(HttpContext.User);
@@ -115,9 +116,10 @@ namespace GiveAwayApp.Controllers
                 return View(valgteSpilVM);
             }
         }
+        // POST: Gam valgte spil
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> InsendValgteSpilAsync(int[] valgteSpilIds)
+        public async Task<IActionResult> IndsendValgteSpilAsync(int[] valgteSpilIds)
         {
             if (valgteSpilIds.Length != 0)
             {
@@ -131,30 +133,45 @@ namespace GiveAwayApp.Controllers
                         OprettelsesDato = DateTime.UtcNow 
                     });
                 }
+                await OpdaterAntalValgt(brugereSpilData, false);
                 _context.BrugereSpil.AddRange(brugereSpilData);
                 await _context.SaveChangesAsync();
             }
             return RedirectToAction(nameof(Index));
         }
+        // POST: Slet valgte spil
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> SletValgteSpilAsync(int[] valgteSpilIds)
         {
             if (valgteSpilIds.Length != 0)
             {
-                List<BrugereSpil> valgteSpilList = new();
+                List<BrugereSpil> brugereSpilData = new();
                 foreach (int valgteSpilId in valgteSpilIds)
                 {
-                    valgteSpilList.Add(new BrugereSpil()
+                    brugereSpilData.Add(new BrugereSpil()
                     {
                         BrugerId = BrugerInfo.Id,
                         SpilId = valgteSpilId
                     });                    
                 }
-                _context.BrugereSpil.RemoveRange(valgteSpilList);
+                await OpdaterAntalValgt(brugereSpilData, true);
+                _context.BrugereSpil.RemoveRange(brugereSpilData);
                 await _context.SaveChangesAsync();
             }
             return RedirectToAction(nameof(Ønskeliste));
+        }
+        // OPDATERER Spil.AntalValgt
+        private async Task OpdaterAntalValgt(List<BrugereSpil> brugereSpilData, bool slet)
+        {
+            foreach (int gamleSpilId in brugereSpilData.Select(s => s.SpilId))
+            {
+                Spil opdateretSpil = await _context.Spil.SingleAsync(spil => spil.SpilId == gamleSpilId);
+
+                opdateretSpil.ValgtAntal = slet ? opdateretSpil.ValgtAntal -= 1UL : opdateretSpil.ValgtAntal += 1UL;
+
+                _context.Spil.Update(opdateretSpil);
+            }
         }
 
         // GET: Spil/Details/5
