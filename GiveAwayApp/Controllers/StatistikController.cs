@@ -19,10 +19,12 @@ namespace GiveAwayApp.Controllers
         public async Task<IActionResult> Index()
         {
             var spilStatistikQuery = from spil in _context.Spil orderby spil.ValgtAntal descending select spil;
+            var antalBrugere = from bruger in _context.Brugere select bruger;
 
             StatiskViewModel statiskVM = new StatiskViewModel
             {
-                PopulæreSpilList = await spilStatistikQuery.ToListAsync()
+                PopulæreSpilList = await spilStatistikQuery.ToListAsync(),
+                AntalBrugere = await antalBrugere.CountAsync()
             };
 
             return View(statiskVM);
