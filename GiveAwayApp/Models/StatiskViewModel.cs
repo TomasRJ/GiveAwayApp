@@ -9,7 +9,7 @@ namespace GiveAwayApp.Models
     {
         public List<Spil> PopulæreSpilList { get; set; }
         public List<string> PopulæreGenreList { get; set; }
-        public int AntalBesøgere { get; set; }
+        public int AntalBesøg { get; set; }
         public int AntalBrugere { get; set; }
         public string[] LandeKodeList { get; set; }
     }

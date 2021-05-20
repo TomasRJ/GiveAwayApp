@@ -2,35 +2,68 @@
 @{
     ViewData["Title"] = "Statistik";
 }
-<h1 class="container">Statistik</h1>
-
-<section class="container-fluid">
-    <div class="row">
-        <div class="col">
-            <h5>Mest poplære spil</h5>
-            <table class="table table-responsive table-striped table-hover">
-                <tr>
-                    <th scope="col">Position</th>
-                    <th scope="col">Valgt antal</th>
-                    <th scope="col">Titel</th>
-                </tr>
-                @{int popSpilIndex = 1;}
-                @foreach (Spil spil in Model.PopulæreSpilList)
-                {
+<div class="container">
+    <section>
+        <h3 id="SpilStatistik">Spil statistik</h3>
+        <div class="row">
+            <div class="col-auto">
+                <h5>Mest poplære spil</h5>
+                <table class="table table-responsive table-striped table-hover">
                     <tr>
-                        <td scope="col">#@(popSpilIndex++)</td>
-                        <td scope="col">@spil.ValgtAntal</td>
-                        <td scope="col">
-                            <a href="@Href($"https://store.steampowered.com/app/{spil.SteamId}/")">
-                                @spil.Titel
-                            </a>
-                        </td>
+                        <th scope="col">#</th>
+                        <th scope="col">Valgt antal</th>
+                        <th scope="col">Titel</th>
                     </tr>
-                }
-            </table>
+                    @{int popSpilIndex = 1;}
+                    @foreach (Spil spil in Model.PopulæreSpilList)
+                    {
+                        <tr>
+                            <td scope="col">#@(popSpilIndex++)</td>
+                            <td scope="col">@spil.ValgtAntal</td>
+                            <td scope="col">
+                                <a href="@Href($"/Spil?SpilGenre=&TitelFilter={spil.Titel.Replace(" ","+")}")">
+                                    @spil.Titel
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+            <div class="col">
+                <h5>Mest poplære genre</h5>
+                <table class="table table-responsive table-striped table-hover">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Valgt antal</th>
+                        <th scope="col">Genre</th>
+                    </tr>
+                    @{ int popSpilGenreIndex = 1;}
+                    @foreach (var spilGenre in Model.PopulæreGenreList)
+                    {
+                        <tr>
+                            <td scope="col">#@(popSpilGenreIndex++)</td>
+                            <td scope="col"></td>
+                            <td scope="col">@spilGenre</td>
+                        </tr>
+                    }
+                </table>
+            </div>
         </div>
-        <div class="col">
-            Antal af brugere: @Model.AntalBrugere
+    </section>
+    <hr />
+    <section>
+        <h3 id="HjemmesideStatistik">Hjemmeside Statistik</h3>
+        <div class="row">
+            <ul class="col list-unstyled">
+                <li class="h5">Antal af brugere: @Model.AntalBrugere</li>
+                <li class="h5">Antal af besøg: @Model.AntalBesøg</li>
+            </ul>
+            <ul class="col list-unstyled">
+                <li class="h5">Besøg fra lande:</li>
+                <li>DK - 17</li>
+                <li>UK - 15</li>
+                <li>US - 13</li>
+            </ul>
         </div>
-    </div>
-</section>
+    </section>
+</div>
