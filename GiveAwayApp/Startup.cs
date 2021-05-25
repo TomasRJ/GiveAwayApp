@@ -60,7 +60,7 @@ namespace GiveAwayApp
 
             app.UseRouting();
 
-            app.UseMiddleware<AntalBrugereMiddleware>();
+            app.UseMiddleware<AntalBesøgereMiddleware>();
 
             app.UseAuthentication();
             app.UseAuthorization();
