@@ -5,7 +5,7 @@
 <div class="container">
     <section>
         <h3 id="SpilStatistik">Spil statistik</h3>
-        <div class="row">
+        <div class="row justify-content-between">
             <div class="col-auto">
                 <h5>Mest poplære spil</h5>
                 <table class="table table-responsive table-striped table-hover">
@@ -29,7 +29,7 @@
                     }
                 </table>
             </div>
-            <div class="col">
+            <div class="col-auto">
                 <h5>Mest poplære genre</h5>
                 <table class="table table-responsive table-striped table-hover">
                     <tr>
@@ -42,8 +42,12 @@
                     {
                         <tr>
                             <td scope="col">#@(popSpilGenreIndex++)</td>
-                            <td scope="col"></td>
-                            <td scope="col">@spilGenre</td>
+                            <td scope="col">@spilGenre.ValgtAntal</td>
+                            <td scope="col">
+                                <a href="@Href($"/Spil?SpilGenre={spilGenre.Genre}&TitelFilter=")">
+                                    @spilGenre.Genre
+                                </a>
+                            </td>
                         </tr>
                     }
                 </table>
@@ -56,14 +60,17 @@
         <div class="row">
             <ul class="col list-unstyled">
                 <li class="h5">Antal af brugere: @Model.AntalBrugere</li>
-                <li class="h5">Antal af besøg: @Model.AntalBesøg</li>
+                <li class="h5">Antal af besøg i dag: @Model.SyvDageStatistik.Find(x => x.AntalBesøgereForDato == DateTime.UtcNow.Date).AntalBesøgere</li>
             </ul>
             <ul class="col list-unstyled">
-                <li class="h5">Besøg fra lande:</li>
-                <li>DK - 17</li>
-                <li>UK - 15</li>
-                <li>US - 13</li>
+                <li class="h5">Antal af besøg fra de sidste 7 dage</li>
+                @foreach (var stat in Model.SyvDageStatistik)
+                {
+                    <li>D. @stat.AntalBesøgereForDato.ToShortDateString() var der @stat.AntalBesøgere besøg</li>
+                }
+                <li class="h5 mt-2">Se mere statistik ved at trykke på knappen til venstre i sidefoden.</li>
             </ul>
+            
         </div>
     </section>
 </div>

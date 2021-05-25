@@ -8,9 +8,9 @@ namespace GiveAwayApp.Models
     public class StatiskViewModel
     {
         public List<Spil> PopulæreSpilList { get; set; }
-        public List<string> PopulæreGenreList { get; set; }
+        public List<Spil> PopulæreGenreList { get; set; }
         public int AntalBesøg { get; set; }
         public int AntalBrugere { get; set; }
-        public string[] LandeKodeList { get; set; }
+        public List<Statistik> SyvDageStatistik { get; set; }
     }
 }
