@@ -32,5 +32,6 @@ namespace GiveAwayApp.Data
         public virtual DbSet<GiveAwayAppUser> Brugere { get; set; }
         public virtual DbSet<BrugereSpil> BrugereSpil { get; set; }
         public virtual DbSet<Statistik> Statistik { get; set; }
+        public virtual DbSet<Lodtrækning> Lodtrækning { get; set; }
     }
 }
