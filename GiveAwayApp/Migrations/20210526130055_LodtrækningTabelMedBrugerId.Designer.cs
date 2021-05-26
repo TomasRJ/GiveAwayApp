@@ -4,14 +4,16 @@ using GiveAwayApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GiveAwayApp.Migrations
 {
     [DbContext(typeof(GiveAwayAppContext))]
-    partial class GiveAwayAppContextModelSnapshot : ModelSnapshot
+    [Migration("20210526130055_LodtrækningTabelMedBrugerId")]
+    partial class LodtrækningTabelMedBrugerId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
