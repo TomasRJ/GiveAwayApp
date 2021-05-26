@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace GiveAwayApp.Models
 {
-    public class StatiskViewModel
+    public class StatistikViewModel
     {
         public List<Spil> PopulæreSpilList { get; set; }
         public List<Spil> PopulæreGenreList { get; set; }

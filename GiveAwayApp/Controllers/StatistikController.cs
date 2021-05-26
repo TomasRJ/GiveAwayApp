@@ -22,7 +22,7 @@ namespace GiveAwayApp.Controllers
             var antalBrugere = from bruger in _context.Brugere select bruger;
             var statistikQuery = from statistik in _context.Statistik where statistik.AntalBesøgereForDato >= DateTime.UtcNow.AddDays(-7) select statistik;   
 
-            StatiskViewModel statiskVM = new StatiskViewModel
+            StatistikViewModel statiskVM = new StatistikViewModel
             {
                 PopulæreSpilList = await spilQuery.ToListAsync(),
                 PopulæreGenreList = GenreListSetup(await spilQuery.ToListAsync()),
