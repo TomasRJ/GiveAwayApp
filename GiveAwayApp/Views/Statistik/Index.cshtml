@@ -64,8 +64,8 @@
             </ul>
             <ul class="col list-unstyled">
                 <li class="h5">Antal af besøg fra de sidste 7 dage</li>
-                @foreach (var stat in Model.SyvDageStatistik)
-                {
+                @foreach (var stat in Model.SyvDageStatistik.OrderByDescending(x => x.AntalBesøgereForDato))
+                {   
                     <li>D. @stat.AntalBesøgereForDato.ToShortDateString() var der @stat.AntalBesøgere besøg</li>
                 }
                 <li class="h5 mt-2">Se mere statistik ved at trykke på knappen til venstre i sidefoden.</li>
