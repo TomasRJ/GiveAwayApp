@@ -1,0 +1,173 @@
+﻿@model GiveAwayApp.Models.LodtrækningViewModel
+
+@{
+    ViewData["Title"] = "Lodtrækning";
+}
+@{
+    // Overskrift med knapper
+}
+<section class="container row justify-content-between pr-0">
+    <div class="col-auto">
+        <h1>Lodtrækning</h1>
+        <p>
+            Lodtrækningen vil ske hver dag kl 14.00 (2 pm).
+        </p>
+    </div>
+</section>
+
+@if (Model.BrugerInfo != null && Model.BrugerInfo.Id == "276d0d24-816f-4f66-84f2-bccc6905bc4a")
+{
+    if (Model.SpilTilLodtrækning != null)
+    {
+        <section class="container">
+            <div class="row justify-content-between">
+                <div class="col-auto">
+                    <h3>Det valgte spil til lodtrækningen</h3>
+                </div>
+                <div class="col-auto">
+                    <button asp-action="PåbegyndLodtrækning" class="btn btn-primary" form="ValgteSpilTilLodtrækning" type="submit">Påbegynd lodtrækning</button>
+                    <button asp-action="SletSpilFraLodtrækning" class="btn btn-danger" form="ValgteSpilTilLodtrækning" type="submit">Slet spil fra lodtrækning</button>
+                </div>
+            </div>
+            <form class="row" id="ValgteSpilTilLodtrækning" method="post">
+                <div class="col-md-3 pb-3">
+                    <div class="d-flex align-items-baseline">
+                        <label class="m-0" for=SpilId+@Model.SpilTilLodtrækning.SpilId>
+                            <a href="@Href($"https://store.steampowered.com/app/{Model.SpilTilLodtrækning.SteamId}/")">@Model.SpilTilLodtrækning.Titel</a>
+                        </label>
+                        <input class="ml-auto" id=SpilId+@Model.SpilTilLodtrækning.SpilId type="checkbox" name="valgteSpilIds" value=@Model.SpilTilLodtrækning.SpilId>
+                    </div>
+                    <label for=SpilId+@Model.SpilTilLodtrækning.SpilId><img class="img-fluid" src="@Href(Model.SpilTilLodtrækning.SpilCoverUrl)" alt="@Model.SpilTilLodtrækning.Titel" /></label>
+                </div>
+            </form>
+        </section>
+    }
+    else
+    {
+        <section class="container">
+            <h3>Der er ikke blevet valgt et spil til lodtrækningen endnu.</h3>
+        </section>
+        <hr />
+    }
+    if (Model.ValgteSpilList.Count != 0)
+    {
+        <section class="container">
+            <div class="row justify-content-between">
+                <div class="col-auto">
+                    <h3>Vælg det spil der skal gives væk.</h3>
+                </div>
+                <div class="col-auto">
+                    <button asp-action="TilføjSpilTilLodtrækning" class="btn btn-secondary" form="BrugerValgteSpil" type="submit">Tilføj spil til lodtrækning</button>
+                </div>
+            </div>
+            <form class="row" id="BrugerValgteSpil" method="post">
+                @foreach (var spil in Model.ValgteSpilList)
+                {
+                    <div class="col-md-3 pb-3">
+                        <div class="d-flex align-items-baseline">
+                            <label class="m-0" for=SpilId+@spil.SpilId>
+                                <a href="@Href($"https://store.steampowered.com/app/{spil.SteamId}/")">@Html.DisplayFor(modelItem => spil.Titel)</a>
+                            </label>
+                            <input class="ml-auto" id=SpilId+@spil.SpilId type="checkbox" name="valgteSpilIds" value=@spil.SpilId>
+                        </div>
+                        <label for=SpilId+@spil.SpilId><img class="img-fluid" src="@Href(spil.SpilCoverUrl)" alt="@spil.Titel" /></label>
+                    </div>
+                }
+            </form>
+        </section>
+        <hr />
+    }
+    else
+    {
+        <section class="container">
+            <h3>Der er ikke nogen brugere der har valgt nogen spil.</h3>
+        </section>
+        <hr />
+    }
+    if (Model.TrukketSpilList.Count != 0)
+    {
+        <section class="container">
+            <div class="row justify-content-between">
+                <div class="col-auto">
+                    <h3>Liste af spil som er blevet uddelt.</h3>
+                </div>
+                <div class="col-auto">
+                    <button asp-action="SletSpilFraTrukket" class="btn btn-danger" form="TrukkedeSpil" type="submit">Tilbageføre et trukket spil</button>
+                </div>
+            </div>
+            <form class="row" id="TrukkedeSpil" method="post">
+                @foreach (var spil in Model.TrukketSpilList)
+                {
+                    <div class="col-md-3 pb-3">
+                        <div class="d-flex align-items-baseline">
+                            <label class="m-0" for=SpilId+@spil.SpilId>
+                                <a href="@Href($"https://store.steampowered.com/app/{spil.SteamId}/")">@Html.DisplayFor(modelItem => spil.Titel)</a>
+                            </label>
+                            <input class="ml-auto" id=SpilId+@spil.SpilId type="checkbox" name="valgteSpilIds" value=@spil.SpilId>
+                        </div>
+                        <label for=SpilId+@spil.SpilId><img class="img-fluid" src="@Href(spil.SpilCoverUrl)" alt="@spil.Titel" /></label>
+                    </div>
+                }
+            </form>
+        </section>
+    }
+    else
+    {
+        <section class="container">
+            <h3>Der er ikke blevet trukket nogen spil endnu.</h3>
+        </section>
+    }
+
+}
+else
+{
+    if (Model.SpilTilLodtrækning != null)
+    {
+        <section class="container">
+            <h3>Spil bliver udsendt til en tilfældig bruger kl. 14.00</h3>
+            <div class="row">
+                <div class="col-md-3 pb-3">
+                    <div class="d-flex align-items-baseline">
+                        <a href="@Href($"https://store.steampowered.com/app/{Model.SpilTilLodtrækning.SteamId}/")">@Model.SpilTilLodtrækning.Titel</a>
+                    </div>
+                    <a href="@Href($"https://store.steampowered.com/app/{Model.SpilTilLodtrækning.SteamId}/")">
+                        <img class="img-fluid" src="@Href(Model.SpilTilLodtrækning.SpilCoverUrl)" alt="@Model.SpilTilLodtrækning.Titel" />
+                    </a>
+                </div>
+            </div>
+        </section>
+        <hr />
+    }
+    else
+    {
+        <section class="container">
+            <h3>Der er ikke blevet valgt et spil til lodtrækningen endnu</h3>
+        </section>
+        <hr />
+    }
+    if (Model.TrukketSpilList.Count != 0)
+    {
+        <section class="container">
+            <h3>Spil som er blevet uddelt.</h3>
+            <div class="row">
+                @foreach (var spil in Model.TrukketSpilList)
+                {
+                    <div class="col-md-3 pb-3">
+                        <div class="d-flex align-items-baseline">
+                            <a href="@Href($"https://store.steampowered.com/app/{spil.SteamId}/")">@spil.Titel</a>
+                        </div>
+                        <a href="@Href($"https://store.steampowered.com/app/{spil.SteamId}/")">
+                            <img class="img-fluid" src="@Href(spil.SpilCoverUrl)" alt="@spil.Titel" />
+                        </a>
+                    </div>
+                }
+            </div>
+        </section>
+    }
+    else
+    {
+        <section class="container">
+            <h3>Der er ikke blevet trukket nogen spil endnu.</h3>
+        </section>
+    }
+}
