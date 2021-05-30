@@ -10,7 +10,7 @@ namespace GiveAwayApp.Models
     {
         public List<Spil> ValgteSpilList { get; set; }
         public List<Spil> TrukketSpilList { get; set; }
-        public Spil SpilTilLodtrækning { get; set; }
+        public List<Spil> SpilTilLodtrækning { get; set; }
         public GiveAwayAppUser BrugerInfo { get; set; }
     }
 }

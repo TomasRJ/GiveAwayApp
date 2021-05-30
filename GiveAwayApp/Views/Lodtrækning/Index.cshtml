@@ -30,15 +30,18 @@
                 </div>
             </div>
             <form class="row" id="ValgteSpilTilLodtrækning" method="post">
-                <div class="col-md-3 pb-3">
-                    <div class="d-flex align-items-baseline">
-                        <label class="m-0" for=SpilId+@Model.SpilTilLodtrækning.SpilId>
-                            <a href="@Href($"https://store.steampowered.com/app/{Model.SpilTilLodtrækning.SteamId}/")">@Model.SpilTilLodtrækning.Titel</a>
-                        </label>
-                        <input class="ml-auto" id=SpilId+@Model.SpilTilLodtrækning.SpilId type="checkbox" name="valgteSpilIds" value=@Model.SpilTilLodtrækning.SpilId>
+                @foreach (var spil in Model.SpilTilLodtrækning)
+                {
+                    <div class="col-md-3 pb-3">
+                        <div class="d-flex align-items-baseline">
+                            <label class="m-0" for=SpilId+@spil.SpilId>
+                                <a href="@Href($" https: //store.steampowered.com/app/{spil.SteamId}/")">@spil.Titel</a>
+                            </label>
+                            <input class="ml-auto" id=SpilId+@spil.SpilId type="checkbox" name="valgteSpilIds" value=@spil.SpilId>
+                        </div>
+                        <label for=SpilId+@spil.SpilId><img class="img-fluid" src="@Href(spil.SpilCoverUrl)" alt="@spil.Titel" /></label>
                     </div>
-                    <label for=SpilId+@Model.SpilTilLodtrækning.SpilId><img class="img-fluid" src="@Href(Model.SpilTilLodtrækning.SpilCoverUrl)" alt="@Model.SpilTilLodtrækning.Titel" /></label>
-                </div>
+                }
             </form>
         </section>
     }
@@ -126,14 +129,17 @@ else
         <section class="container">
             <h3>Spil bliver udsendt til en tilfældig bruger kl. 14.00</h3>
             <div class="row">
+                @foreach (var spil in Model.SpilTilLodtrækning)
+                {
                 <div class="col-md-3 pb-3">
                     <div class="d-flex align-items-baseline">
-                        <a href="@Href($"https://store.steampowered.com/app/{Model.SpilTilLodtrækning.SteamId}/")">@Model.SpilTilLodtrækning.Titel</a>
+                        <a href="@Href($" https://store.steampowered.com/app/{spil.SteamId}/")">@spil.Titel</a>
                     </div>
-                    <a href="@Href($"https://store.steampowered.com/app/{Model.SpilTilLodtrækning.SteamId}/")">
-                        <img class="img-fluid" src="@Href(Model.SpilTilLodtrækning.SpilCoverUrl)" alt="@Model.SpilTilLodtrækning.Titel" />
+                    <a href="@Href($"https://store.steampowered.com/app/{spil.SteamId}/")">
+                        <img class="img-fluid" src="@Href(spil.SpilCoverUrl)" alt="@spil.Titel" />
                     </a>
                 </div>
+                }                
             </div>
         </section>
         <hr />

@@ -43,13 +43,15 @@ namespace GiveAwayApp.Controllers
                                      join ls in _context.Spil on lodtrækning.ValgteSpilId equals ls.SpilId
                                      select ls;
 
+            var test = await valgtTilLodtrækningQuery.ToListAsync();
+
             LodtrækningViewModel lodtrækningVM = new LodtrækningViewModel
             {
                 ValgteSpilList = await filtreretValgteSpilQuery.AnyAsync() ?
                     await valgteSpilQuery.Except(filtreretValgteSpilQuery).Distinct().ToListAsync() :
                     await valgteSpilQuery.Distinct().ToListAsync(),
                 TrukketSpilList = await erTrukketSpilQuery.ToListAsync(),
-                SpilTilLodtrækning = await valgtTilLodtrækningQuery.AnyAsync() ? await valgtTilLodtrækningQuery.SingleAsync() : null,
+                SpilTilLodtrækning = await valgtTilLodtrækningQuery.AnyAsync() ? await valgtTilLodtrækningQuery.ToListAsync() : null,
                 BrugerInfo = await _userManager.GetUserAsync(HttpContext.User)
             };
 
