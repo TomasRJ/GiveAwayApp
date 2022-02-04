@@ -10,19 +10,19 @@
     <div class="col-auto">
         <h1>Lodtrækning</h1>
         <p>
-            Lodtrækningen vil ske hver dag kl 14.00 (2 pm).
+            Lodtrækningen af de valgte spil vil ske hver dag kl 14.00 (2 pm).
         </p>
     </div>
 </section>
 
-@if (Model.BrugerInfo != null && Model.BrugerInfo.Id == "276d0d24-816f-4f66-84f2-bccc6905bc4a")
+@if (Model.BrugerInfo != null && User.IsInRole("admin"))
 {
     if (Model.SpilTilLodtrækning != null)
     {
         <section class="container">
             <div class="row justify-content-between">
                 <div class="col-auto">
-                    <h3>Det valgte spil til lodtrækningen</h3>
+                    <h3>Spil valgt til lodtrækningen</h3>
                 </div>
                 <div class="col-auto">
                     <button asp-action="PåbegyndLodtrækning" class="btn btn-primary" form="ValgteSpilTilLodtrækning" type="submit">Påbegynd lodtrækning</button>
@@ -35,7 +35,7 @@
                     <div class="col-md-3 pb-3">
                         <div class="d-flex align-items-baseline">
                             <label class="m-0" for=SpilId+@spil.SpilId>
-                                <a href="@Href($" https: //store.steampowered.com/app/{spil.SteamId}/")">@spil.Titel</a>
+                                <a href="@Href($"https://store.steampowered.com/app/{spil.SteamId}/")">@spil.Titel</a>
                             </label>
                             <input class="ml-auto" id=SpilId+@spil.SpilId type="checkbox" name="valgteSpilIds" value=@spil.SpilId>
                         </div>
@@ -53,12 +53,12 @@
         </section>
         <hr />
     }
-    if (Model.ValgteSpilList.Count != 0)
+    if (Model.ValgteSpilList != null)
     {
         <section class="container">
             <div class="row justify-content-between">
                 <div class="col-auto">
-                    <h3>Vælg det spil der skal gives væk.</h3>
+                    <h3>Vælg spil som skal gives væk.</h3>
                 </div>
                 <div class="col-auto">
                     <button asp-action="TilføjSpilTilLodtrækning" class="btn btn-secondary" form="BrugerValgteSpil" type="submit">Tilføj spil til lodtrækning</button>
@@ -118,7 +118,7 @@
     else
     {
         <section class="container">
-            <h3>Der er ikke blevet trukket nogen spil endnu.</h3>
+            <h3>Der er ikke blevet trukket nogle spil endnu.</h3>
         </section>
     }
 
@@ -128,19 +128,19 @@ else
     if (Model.SpilTilLodtrækning != null)
     {
         <section class="container">
-            <h3>Spil bliver udsendt til en tilfældig bruger kl. 14.00</h3>
+            <h3>Spil som vil blive uddelt til en tilfældig bruger</h3>
             <div class="row">
                 @foreach (var spil in Model.SpilTilLodtrækning)
                 {
-                <div class="col-md-3 pb-3">
-                    <div class="d-flex align-items-baseline">
-                        <a href="@Href($" https://store.steampowered.com/app/{spil.SteamId}/")">@spil.Titel</a>
+                    <div class="col-md-3 pb-3">
+                        <div class="d-flex align-items-baseline">
+                            <a href="@Href($"https://store.steampowered.com/app/{spil.SteamId}/")">@spil.Titel</a>
+                        </div>
+                        <a href="@Href($"https://store.steampowered.com/app/{spil.SteamId}/")">
+                            <img class="img-fluid" src="@Href(spil.SpilCoverUrl)" alt="@spil.Titel" />
+                        </a>
                     </div>
-                    <a href="@Href($"https://store.steampowered.com/app/{spil.SteamId}/")">
-                        <img class="img-fluid" src="@Href(spil.SpilCoverUrl)" alt="@spil.Titel" />
-                    </a>
-                </div>
-                }                
+                }
             </div>
         </section>
         <hr />

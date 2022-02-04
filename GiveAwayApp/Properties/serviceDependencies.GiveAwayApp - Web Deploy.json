@@ -7,7 +7,7 @@
       "ignored": "true"
     },
     "mssql2": {
-      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/giveawayapp-dbserver/databases/GiveAwayApp_db",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/giveawayapp-dbserver/databases/GiveAwayApp_db",
       "type": "mssql.azure",
       "connectionId": "ConnectionStrings:GiveAwayAppContextConnection",
       "secretStore": "AzureAppSettings"

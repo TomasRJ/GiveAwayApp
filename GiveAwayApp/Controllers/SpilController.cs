@@ -116,7 +116,7 @@ namespace GiveAwayApp.Controllers
                 return View(valgteSpilVM);
             }
         }
-        // POST: Gam valgte spil
+        // POST: Gem valgte spil
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> IndsendValgteSpilAsync(int[] valgteSpilIds)

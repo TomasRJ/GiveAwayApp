@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GiveAwayApp.Migrations
 {
     [DbContext(typeof(GiveAwayAppContext))]
-    [Migration("20210526130055_LodtrækningTabelMedBrugerId")]
-    partial class LodtrækningTabelMedBrugerId
+    [Migration("20210605131831_LodtrækningTabel")]
+    partial class LodtrækningTabel
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -122,10 +122,15 @@ namespace GiveAwayApp.Migrations
                     b.Property<int>("ValgteSpilId")
                         .HasColumnType("int");
 
-                    b.Property<string>("VinderBrugerId")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("VinderId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("LodtrækningId");
+
+                    b.HasIndex("ValgteSpilId")
+                        .IsUnique();
+
+                    b.HasIndex("VinderId");
 
                     b.ToTable("Lodtrækning");
                 });
@@ -333,6 +338,23 @@ namespace GiveAwayApp.Migrations
                     b.Navigation("Bruger");
 
                     b.Navigation("Spil");
+                });
+
+            modelBuilder.Entity("GiveAwayApp.Models.Lodtrækning", b =>
+                {
+                    b.HasOne("GiveAwayApp.Models.Spil", "ValgteSpil")
+                        .WithOne()
+                        .HasForeignKey("GiveAwayApp.Models.Lodtrækning", "ValgteSpilId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GiveAwayApp.Areas.Identity.Data.GiveAwayAppUser", "Vinder")
+                        .WithMany()
+                        .HasForeignKey("VinderId");
+
+                    b.Navigation("ValgteSpil");
+
+                    b.Navigation("Vinder");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

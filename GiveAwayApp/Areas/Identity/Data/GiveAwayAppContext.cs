@@ -19,14 +19,24 @@ namespace GiveAwayApp.Data
                 .HasMany(s => s.Spil)
                 .WithMany(b => b.Brugere)
                 .UsingEntity<BrugereSpil>(
-                    bs => bs.HasOne(spilProp => spilProp.Spil).WithMany().HasForeignKey(bsProp => bsProp.SpilId),
-                    bs => bs.HasOne(brugerProp => brugerProp.Bruger).WithMany().HasForeignKey(bsProp => bsProp.BrugerId),
+                    bs => bs.HasOne(spilProp => spilProp.Spil)
+                        .WithMany()
+                        .HasForeignKey(bsProp => bsProp.SpilId),
+                    bs => bs.HasOne(brugerProp => brugerProp.Bruger)
+                        .WithMany()
+                        .HasForeignKey(bsProp => bsProp.BrugerId),
                     bs =>
                     {
                         bs.HasKey(pKey => new { pKey.BrugerId, pKey.SpilId }); // laver sammensat primary key
-                        bs.Property(bsProp => bsProp.OprettelsesDato).HasDefaultValueSql("GETUTCDATE()"); // laver oprettelsesdatokolonnen i BrugereSpil tabellen.
+                        bs.Property(bsProp => bsProp.OprettelsesDato)
+                            .HasDefaultValueSql("GETUTCDATE()"); // laver oprettelsesdatokolonnen i BrugereSpil tabellen.
                     }
                 );
+
+            builder.Entity<Lodtrækning>()
+                .HasOne(p => p.ValgteSpil)
+                .WithOne()
+                .HasForeignKey<Lodtrækning>(p => p.ValgteSpilId);
         }
         public virtual DbSet<Spil> Spil { get; set; }
         public virtual DbSet<GiveAwayAppUser> Brugere { get; set; }

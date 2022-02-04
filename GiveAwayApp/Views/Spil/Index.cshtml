@@ -6,8 +6,7 @@
 
 <section class="container">
     <h1>Spiludvalg</h1>
-
-    @if (ViewBag.BrugerId == "276d0d24-816f-4f66-84f2-bccc6905bc4a")
+    @if (User.IsInRole("admin"))
     {
         <a class="btn btn-primary" asp-action="Create">Tilføj et nyt spil</a>
     }

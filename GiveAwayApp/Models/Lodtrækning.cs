@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using GiveAwayApp.Areas.Identity.Data;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GiveAwayApp.Models
 {
@@ -9,7 +7,8 @@ namespace GiveAwayApp.Models
     {
         public int LodtrækningId { get; set; }
         public int ValgteSpilId { get; set; }
-        public string VinderBrugerId { get; set; }
+        public Spil ValgteSpil { get; set; }
+        public GiveAwayAppUser Vinder { get; set; }
         public bool ValgtTilLodtrækning { get; set; }
         public bool ErTrukket { get; set; }
     }

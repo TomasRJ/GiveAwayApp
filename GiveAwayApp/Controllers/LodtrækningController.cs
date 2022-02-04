@@ -28,30 +28,23 @@ namespace GiveAwayApp.Controllers
                                   join bs in _context.BrugereSpil on spil.SpilId equals bs.SpilId
                                   select spil;
 
-            var filtreretValgteSpilQuery = from spil in _context.Spil
-                                           where (from lodtrækning in _context.Lodtrækning
-                                                   where lodtrækning.ValgteSpilId == spil.SpilId
-                                                   select lodtrækning.ValgteSpilId).Contains(spil.SpilId)
-                                           select spil;
+            var lodtrækningQuery = from lodtrækning in _context.Lodtrækning
+                                        join spil in _context.Spil on lodtrækning.ValgteSpilId equals spil.SpilId
+                                        select new { lodtrækning, spil };
 
-            var valgtTilLodtrækningQuery = from lodtrækning in _context.Lodtrækning
-                                           where lodtrækning.ValgtTilLodtrækning == true
-                                           join ls in _context.Spil on lodtrækning.ValgteSpilId equals ls.SpilId                                           
-                                           select ls;
-            var erTrukketSpilQuery = from lodtrækning in _context.Lodtrækning
-                                     where lodtrækning.ErTrukket == true
-                                     join ls in _context.Spil on lodtrækning.ValgteSpilId equals ls.SpilId
-                                     select ls;
-
-            var test = await valgtTilLodtrækningQuery.ToListAsync();
+            var filtreretValgteSpilQuery = lodtrækningQuery.Select(s => s.spil);
 
             LodtrækningViewModel lodtrækningVM = new LodtrækningViewModel
             {
                 ValgteSpilList = await filtreretValgteSpilQuery.AnyAsync() ?
                     await valgteSpilQuery.Except(filtreretValgteSpilQuery).Distinct().ToListAsync() :
                     await valgteSpilQuery.Distinct().ToListAsync(),
-                TrukketSpilList = await erTrukketSpilQuery.ToListAsync(),
-                SpilTilLodtrækning = await valgtTilLodtrækningQuery.AnyAsync() ? await valgtTilLodtrækningQuery.ToListAsync() : null,
+                TrukketSpilList = await lodtrækningQuery
+                    .Where(l => l.lodtrækning.ErTrukket == true)
+                    .Select(s => s.spil).ToListAsync(),
+                SpilTilLodtrækning = await lodtrækningQuery
+                    .Where(l => l.lodtrækning.ValgtTilLodtrækning == true)
+                    .Select(s => s.spil).ToListAsync(),
                 BrugerInfo = await _userManager.GetUserAsync(HttpContext.User)
             };
 
@@ -94,7 +87,7 @@ namespace GiveAwayApp.Controllers
                 List<Lodtrækning> fjernLodList = new();
                 foreach (int valgteSpilId in valgteSpilIds)
                 {
-                    fjernLodList.Add(valgteLodtrækning.Find(x => x.ValgteSpilId == valgteSpilId));
+                    fjernLodList.Add(valgteLodtrækning.Find(x => x.ValgteSpilId ==  valgteSpilId));
                 }
 
                 _context.Lodtrækning.RemoveRange(fjernLodList);
@@ -149,7 +142,7 @@ namespace GiveAwayApp.Controllers
 
                     lod.ValgtTilLodtrækning = false;
                     lod.ErTrukket = true;
-                    lod.VinderBrugerId = brugerListFraSpilId[tilfældig.Next(brugerListFraSpilId.Count)].Id;
+                    lod.Vinder = brugerListFraSpilId[tilfældig.Next(brugerListFraSpilId.Count)];
 
                     opdaterLodde.Add(lod);
                 }
